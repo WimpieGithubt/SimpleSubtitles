@@ -1,5 +1,6 @@
 import UIKit
 import SubtitlesInterface
+import SwiftUI
 
 class SubtitlesTextView: UIView {
     private let presenter: SubtitlesController
@@ -19,7 +20,24 @@ class SubtitlesTextView: UIView {
         label.insets = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
         label.textAlignment = .center
         label.textColor = .white
-        label.font = UIFont.boldSystemFont(ofSize: 44)
+        
+        let defaultFontSize: CGFloat
+            switch UIDevice.current.userInterfaceIdiom {
+            case .tv:
+                defaultFontSize = 44
+            case .pad:
+                defaultFontSize = 32
+            case .phone:
+                defaultFontSize = 22
+            default:
+                defaultFontSize = 44
+            }
+        
+        let storedFontSize = UserDefaults.standard.double(forKey: "subtitleFontSize")
+        let fontSize = storedFontSize > 0 ? storedFontSize : defaultFontSize
+
+        label.font = UIFont.boldSystemFont(ofSize: fontSize)
+        
         label.layer.backgroundColor = UIColor(white: 0.0, alpha: 0.5).cgColor
         label.layer.cornerRadius = 10
         return label
@@ -29,6 +47,23 @@ class SubtitlesTextView: UIView {
         self.presenter = presenter
         super.init(frame: CGRect(x: 100, y: 100, width: 1200, height: 800))
         setupView()
+        
+        NotificationCenter.default.addObserver(
+                self,
+                selector: #selector(fontSizeDidChange(_:)),
+                name: Notification.Name("subtitleFontSizeDidChange"),
+                object: nil
+            )
+    }
+    
+    @objc private func fontSizeDidChange(_ notification: Notification) {
+        if let size = notification.userInfo?["size"] as? Double {
+            updateSubtitleFontSize(CGFloat(size))
+        }
+    }
+
+    deinit {
+        NotificationCenter.default.removeObserver(self)
     }
     
     required init?(coder: NSCoder) {
@@ -46,6 +81,11 @@ class SubtitlesTextView: UIView {
         
         stackView.addArrangedSubview(labelLines)
         stackView.addSubview(labelLines)
+    }
+    
+    func updateSubtitleFontSize(_ fontSize: CGFloat) {
+        labelLines.font = UIFont.boldSystemFont(ofSize: fontSize)
+        setNeedsLayout()
     }
 }
 
