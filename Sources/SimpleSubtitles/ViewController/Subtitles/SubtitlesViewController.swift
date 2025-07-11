@@ -6,12 +6,6 @@ class SubtitlesTextView: UIView {
     private let presenter: SubtitlesController
     private var viewModel: SubtitlesControl.ViewModel?
     
-//    var show: Bool = true {
-//        didSet {
-//            labelLines.isHidden = !show
-//        }
-//    }
-    
     private let stackView: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .vertical
@@ -24,6 +18,7 @@ class SubtitlesTextView: UIView {
         
         let label = SubtitlesLabel()
         label.numberOfLines = 0
+        label.isUserInteractionEnabled = false
         label.insets = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
         label.textAlignment = .center
         label.textColor = .white
@@ -54,10 +49,11 @@ class SubtitlesTextView: UIView {
     init(presenter: SubtitlesController) {
         self.presenter = presenter
         super.init(frame: CGRect(x: 100, y: 100, width: 1200, height: 800))
-        
-//        setupObserver()
+//        backgroundColor = .clear
         
         setupView()
+        
+        isUserInteractionEnabled = false
         
         NotificationCenter.default.addObserver(
             self,
@@ -85,29 +81,6 @@ class SubtitlesTextView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-//    private func setupObserver() {
-//        UserDefaults.standard.addObserver(
-//            self,
-//            forKeyPath: "subtitlesEnabled",
-//            options: [.initial, .new],
-//            context: nil
-//        )
-//    }
-    
-//    override func observeValue(forKeyPath keyPath: String?,
-//                               of object: Any?,
-//                               change: [NSKeyValueChangeKey: Any]?,
-//                               context: UnsafeMutableRawPointer?) {
-//        if keyPath == "subtitlesEnabled" {
-//            DispatchQueue.main.async { [weak self] in
-//                guard let self = self else { return }
-//                let enabled = UserDefaults.standard.bool(forKey: "subtitlesEnabled")
-//                show = enabled
-//                print("subtitlesEnabled in observeValue SimpleSubtitles = \(show)")
-//            }
-//        }
-//    }
-    
     private func setupView() {
         addSubview(stackView)
         stackView.translatesAutoresizingMaskIntoConstraints = false
@@ -119,10 +92,7 @@ class SubtitlesTextView: UIView {
         
         stackView.addArrangedSubview(labelLines)
         stackView.addSubview(labelLines)
-        
-//        let enabled = UserDefaults.standard.bool(forKey: "subtitlesEnabled")
-//        labelLines.isHidden = !enabled
-//        print("subtitlesEnabled in setupView SimpleSubtitles = \(enabled)")
+    
     }
     
     func updateSubtitleFontSize(_ fontSize: CGFloat) {

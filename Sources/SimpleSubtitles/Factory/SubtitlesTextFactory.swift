@@ -48,16 +48,31 @@ public struct SimpleSubtitles {
         let presenter = SubtitlesControlPresenter(player: player, interactor: interactor)
         let subtitleView = SubtitlesTextView(presenter: presenter)
         presenter.view = subtitleView
-        if let view = viewController.view {
-            view.addSubview(subtitleView)
-            subtitleView.translatesAutoresizingMaskIntoConstraints = false
-            NSLayoutConstraint.activate([
-                subtitleView.topAnchor.constraint(equalTo: view.topAnchor),
-                subtitleView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-                subtitleView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-                subtitleView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
-            ])
-        }
+        
+        subtitleView.isUserInteractionEnabled = false
+        subtitleView.backgroundColor = .clear
+        
+//        if let view = viewController.view {
+//            view.addSubview(subtitleView)
+//            subtitleView.translatesAutoresizingMaskIntoConstraints = false
+//            NSLayoutConstraint.activate([
+//                subtitleView.topAnchor.constraint(equalTo: view.topAnchor),
+//                subtitleView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+//                subtitleView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+//                subtitleView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+//            ])
+//        }
+        if let contentOverlayView = viewController.contentOverlayView {
+                contentOverlayView.addSubview(subtitleView)
+                subtitleView.translatesAutoresizingMaskIntoConstraints = false
+                NSLayoutConstraint.activate([
+                    subtitleView.topAnchor.constraint(equalTo: contentOverlayView.topAnchor),
+                    subtitleView.bottomAnchor.constraint(equalTo: contentOverlayView.bottomAnchor),
+                    subtitleView.leadingAnchor.constraint(equalTo: contentOverlayView.leadingAnchor),
+                    subtitleView.trailingAnchor.constraint(equalTo: contentOverlayView.trailingAnchor)
+                ])
+            }
+        
         if !options.languagesAvailable.isEmpty {
             let subtitleSelection = SubtitleSelectionViewController(interactor: interactor, languages: options.languagesAvailable, defaultLanguage: options.defaultLanguage)
             subtitleSelection.title = NSLocalizedString("subtitles_title", bundle: .module, comment: "Subtitles title for the menu on tvOS")
