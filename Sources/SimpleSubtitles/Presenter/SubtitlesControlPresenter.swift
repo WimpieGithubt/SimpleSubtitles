@@ -45,8 +45,11 @@ class SubtitlesControlPresenter: SubtitlesController {
     }
     
     func setLanguage(url: String) {
+//        print("setLanguage \(!url.isEmpty) \(url)")
         interactor.setSubtitleFile(url: url)
-        isOn = true
+//        isOn = true
+        isOn = !url.isEmpty
+        
     }
     
     func setAvailableLanguages(languages: [SubtitleLanguage], defaultLanguageID: String? = nil) {
