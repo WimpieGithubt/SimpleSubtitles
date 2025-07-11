@@ -18,9 +18,11 @@ class SubtitlesTextView: UIView {
         
         let subtitlesEnabled = UserDefaults.standard.bool(forKey: "subtitlesEnabled")
         guard subtitlesEnabled else {
+            print("geen subtitles")
             return SubtitlesLabel()  // leeg label
         }
         
+        print("voeg subtitles toe")
         let label = SubtitlesLabel()
         label.numberOfLines = 0
         label.insets = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
