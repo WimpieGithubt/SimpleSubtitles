@@ -15,6 +15,12 @@ class SubtitlesTextView: UIView {
     } ()
     
     private let labelLines: SubtitlesLabel = {
+        
+        let subtitlesEnabled = UserDefaults.standard.bool(forKey: "subtitlesEnabled")
+        guard subtitlesEnabled else {
+            return SubtitlesLabel()  // leeg label
+        }
+        
         let label = SubtitlesLabel()
         label.numberOfLines = 0
         label.insets = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
@@ -66,14 +72,14 @@ class SubtitlesTextView: UIView {
     @objc private func fontSizeDidChange(_ notification: Notification) {
         if let size = notification.userInfo?["size"] as? Double {
             updateSubtitleFontSize(CGFloat(size))
-            print("updateSubtitleFontSize: \(size)")
+//            print("updateSubtitleFontSize: \(size)")
         }
     }
     
     @objc private func subtitlesEnabledDidChange(_ notification: Notification) {
         if let enabled = notification.userInfo?["enabled"] as? Bool {
             labelLines.isHidden = !enabled
-            print("subtitlesEnabledDidChange: \(enabled)")
+//            print("subtitlesEnabledDidChange: \(enabled)")
         }
     }
 
