@@ -49,16 +49,31 @@ class SubtitlesTextView: UIView {
         setupView()
         
         NotificationCenter.default.addObserver(
-                self,
-                selector: #selector(fontSizeDidChange(_:)),
-                name: Notification.Name("subtitleFontSizeDidChange"),
-                object: nil
-            )
+            self,
+            selector: #selector(fontSizeDidChange(_:)),
+            name: Notification.Name("subtitleFontSizeDidChange"),
+            object: nil
+        )
+    
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(subtitlesEnabledDidChange(_:)),
+            name: Notification.Name("subtitlesEnabledDidChange"),
+            object: nil
+        )
     }
     
     @objc private func fontSizeDidChange(_ notification: Notification) {
         if let size = notification.userInfo?["size"] as? Double {
             updateSubtitleFontSize(CGFloat(size))
+            print("updateSubtitleFontSize: \(size)")
+        }
+    }
+    
+    @objc private func subtitlesEnabledDidChange(_ notification: Notification) {
+        if let enabled = notification.userInfo?["enabled"] as? Bool {
+            labelLines.isHidden = !enabled
+            print("subtitlesEnabledDidChange: \(enabled)")
         }
     }
 
@@ -81,6 +96,9 @@ class SubtitlesTextView: UIView {
         
         stackView.addArrangedSubview(labelLines)
         stackView.addSubview(labelLines)
+        
+        let enabled = UserDefaults.standard.bool(forKey: "subtitlesEnabled")
+        labelLines.isHidden = !enabled
     }
     
     func updateSubtitleFontSize(_ fontSize: CGFloat) {
